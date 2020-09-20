@@ -1,3 +1,10 @@
+
+## VSCode files
+.vscode/
+
+## Report pdf
+report_stat_doe.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
