@@ -1,0 +1,51 @@
+\ProvidesPackage{verlab}[2017/11/30 VeRLab Package]
+\usepackage{eso-pic}
+\usepackage{xspace}
+\usepackage{ulem}
+\DeclareOption{highlight}{\def\Corrections{1}}
+\DeclareOption{none}{\def\Corrections{2}}
+\DeclareOption{onlyBlue}{\def\Corrections{3}}
+%% Fallback
+\DeclareOption*{
+	\ClassWarning{verlab}{Unknown option '\CurrentOption'}
+}
+%% Execute default options
+\ExecuteOptions{none}
+\ProcessOptions\relax
+%
+\ifnum\Corrections=1    % 1 - Highlight
+\newcommand{\cutoff}[1]{{\color{red}{\sout{#1}}}}%
+\newcommand{\adding}[1]{{\color{blue}{\uline{#1}}}}%
+\fi
+%
+\ifnum\Corrections=2    % 2 - Final
+\newcommand{\cutoff}[1]{\ignorespaces}%
+\newcommand{\adding}[1]{#1}%
+\fi
+%
+\ifnum\Corrections=3    % 3 - Only blue
+\newcommand{\cutoff}[1]{\ignorespaces}%
+\newcommand{\adding}[1]{{\color{blue}{\uline{#1}}}}%
+\fi
+%
+%\newcommand{\todo}[1]{{\color{red} TODO: {#1}}}
+%\newcommand{\review}[1]{{\color{green} REVIEW: {#1}}}
+%
+\makeatletter
+\DeclareRobustCommand\todo[1]{{\color{red} TODO: {#1}}}
+\DeclareRobustCommand\review[1]{{\color{green} REVIEW: {#1}}}
+\makeatother
+% Add a period to the end of an abbreviation unless there’s one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\def\eg{\textit{e.g}\onedot} \def\Eg{\textit{E.g}\onedot}
+\def\ie{\textit{i.e}\onedot} \def\Ie{\textit{I.e}\onedot}
+\def\cf{\textit{c.f}\onedot} \def\Cf{\textit{C.f}\onedot}
+\def\etc{\textit{etc}\onedot} \def\vs{\textit{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\textit{et al}\onedot}
+\makeatother
+%
+\endinput

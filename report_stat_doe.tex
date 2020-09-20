@@ -1,0 +1,287 @@
+% --------------------------------------------------------------------------
+% Report template for BIR projects
+% Report template with support for Portuguese and English languages
+% Change language {brazil or english} in \documentclass as per the examples
+% This template has support for the ABNT citing format
+%
+% Original version: jan/2019
+% https://github.com/
+%
+% Based on ABNTEX2 and the thesis template
+% --------------------------------------------------------------------------
+\documentclass[
+%\DeclareUnicodeCharacter{200B}{}
+% --------------------------------------------------------------------------
+% classe memoir . options
+12pt,					% tamanho da fonte
+openright,				% cap. começam em pág ímpar (ins pág vazia caso preciso)
+twoside,				% para impressão em verso e anverso. Oposto a oneside
+a4paper,				% tamanho do papel
+% --------------------------------------------------------------------------
+% classe abntex2 . options
+%chapter=TITLE,			% títulos de capítulos convertidos em letras maiúsc.
+%section=TITLE,			% títulos de seções convertidos em letras maiúsc.
+%subsection=TITLE,		% títulos de subseções convertidos em letras maiúsc.
+%subsubsection=TITLE,	% títulos de subsubseções convertidos em letras maiúsc.
+% --------------------------------------------------------------------------
+% Opções de IDIOMA do pacote babel
+english,
+brazil
+]{ABNT/abntex2_report}
+% --------------------------------------------------------------------------
+% Pacotes básicos
+\usepackage{lmodern}			% Usa a fonte Latin Modern
+\usepackage[T1]{fontenc}		% Seleção de códigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificação do documento (conversão automática dos acentos)
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{microtype} 			% para melhorias de justificação
+\usepackage{lipsum}
+\usepackage[brazilian,hyperpageref]{backref} % páginas com citações na bibliog.
+%\usepackage[alf,abnt-etal-list=0,abnt-etal-cite=3,abnt-emphasize=bf]{abntex2cite}
+\usepackage[alf]{abntex2cite}
+%
+\usepackage{lastpage}			% Usado pela Ficha catalográfica
+%\usepackage{subfig}
+\usepackage{supertabular}       % tabela na capa do documento
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{adjustbox}
+\usepackage{amssymb,amsmath,mathrsfs}
+\usepackage{algorithm,algpseudocode}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{tocloft}
+\usepackage{threeparttable}
+\usepackage{etoolbox}
+\usepackage[normalem]{ulem}
+\usepackage{yaacro}
+\usepackage[none]{verlab}
+%\usepackage{fontspec}
+%\setmainfont{Helvetica Light}
+\usepackage{lscape}
+%\usepackage[graphicx]{realboxes}
+\usepackage{rotating}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{dirtytalk}
+\usepackage{pdfpages}
+\usepackage{threeparttable}
+\usepackage{hyperref}
+%\hypersetup{draft}
+\usepackage{float}
+\DeclareUnicodeCharacter{200B}{}
+% --------------------------------------------------------------------------%
+% Configurações do PDF final
+\definecolor{blue}{RGB}{41,5,195}
+\makeatletter
+\hypersetup{
+	%pagebackref=true,
+	pdftitle={\@title},
+	pdfauthor={\@author},
+	pdfsubject={\@title},
+	%pdfsubject={\imprimirpreambulo},
+	pdfcreator={LaTeX with abnTeX2},
+	pdfkeywords={abnt}{latex}{abntex}{abntex2}{\imprimirpalavraschave},
+	colorlinks=true,       		% false: boxed links; true: colored links
+	linkcolor=blue,          	% color of internal links
+	citecolor=blue,        		% color of links to bibliography
+	filecolor=magenta,      	% color of file links
+	urlcolor=blue,
+	bookmarksdepth=4
+}
+%\makeatother
+% --------------------------------------------------------------------------
+% Posiciona figuras e tabelas no topo da página quando adicionadas sozinhas
+% em um página em branco. Ver https://github.com/abntex/abntex2/issues/170
+%\makeatletter
+\setlength{\@fptop}{5pt} % Set distance from top of page to first float
+\makeatother
+% --------------------------------------------------------------------------
+% Formatação
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\apptocmd{\thebibliography}{\justifying}{}{}
+\renewcommand{\ABNTEXsectionfont}{\bfseries}
+\titlespacing*{\chapter}{0pt}{0pt}{12pt}
+\titlespacing*{\section}{0pt}{6pt}{6pt}
+\titlespacing*{\subsection}{0pt}{6pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{6pt}{6pt}
+% --------------------------------------------------------------------------
+% Rearranja os finais de cada estrutura
+\algrenewtext{EndWhile}{\algorithmicend\ \algorithmicwhile}
+\algrenewtext{EndFor}{\algorithmicend\ \algorithmicfor}
+\algrenewtext{EndIf}{\algorithmicend\ \algorithmicif}
+\algrenewtext{EndFunction}{\algorithmicend\ \algorithmicfunction}
+% --------------------------------------------------------------------------
+% Espaçamentos entre linhas e parágrafos
+\setlength{\parindent}{1.3cm} % linha
+\setlength{\parskip}{0.2cm} % parágrafo, tente também \onelineskip
+% --------------------------------------------------------------------------
+% Informações de dados para CAPA e FOLHA DE ROSTO
+\prodtecnica{001 / 2020}
+\titulo{\textit{Design of Experiments}}
+\tiporelatorio{Final}
+\nomeprojeto{Modelagem do Helicóptero de Papel}
+\outrossubtitulos{~} % opcional
+\autores{
+	Diogo Alexandre Martins\\
+	Israel Cerqueira Motta Neto\\
+	Mateus Santos de Cerqueira\\
+	Pedro Paulo Ventura Tecchio
+}
+% \newcommand{\autoresexternos}{
+% 	John Marston\\
+% 	Frank West\
+% }
+\local{Salvador\\Bahia, Brasil}
+\data{Setembro de 2020}
+% \classificacao{( ) Confidencial  (X) Restrito  ( )  Uso Interno  ( ) Público}
+% \revisao{01}
+% \tabelacutter{000}
+% \palavraschave{1. Manipulator. 2. Simulation. 3. Computer vision.}
+% \classificacaoassunto{000} % sNúmero de Classificação do assunto
+%\parceirologo{logos/x.png}
+%------------------------------------------------------------------
+% Finalização das configurações da capa
+%
+%
+%------------------------------------------------------------------
+% Acrônimos :: Chamar no texto como \ac{DoF}
+\begin{acgroupdef}[list=acronyms]
+	\acdef{DOE}{\textit{Design of Experiments}}
+	%
+	%
+\end{acgroupdef}
+% --------------------------------------------------------------------------
+% Criação do sumário
+\makeindex
+%
+\begin{document}
+	% \frenchspacing
+	\imprimircapa
+	% \imprimircatalografica
+% --------------------------------------------------------------------------
+% Sumário executivo
+	% \ABNTEXchapterfont\large\textbf{\execsummarytitlename}
+	% \begin{flushleft}
+	% 	\normalsize
+	% 	\justify
+	% 	\normalfont
+	% 	O projeto de XXXX
+
+	% 	O projeto iniciou no dia XX de XX de 20XX.
+
+	% 	O prazo de execução planejado é de XX meses.
+	% \end{flushleft}
+	% \clearpage
+%------------------------------------------------------------------
+% Resumo e abstract
+	\ABNTEXchapterfont\large\textbf{\resumoatitlename}
+	\begin{flushleft}
+		\normalsize
+		\justify
+		\normalfont
+	Este relatório
+
+	\end{flushleft}
+\vspace*{1cm}
+\newpage
+	% %
+	% \ABNTEXchapterfont\large\textbf{\resumobtitlename}
+	% \begin{flushleft}
+	% 	\normalsize
+	% 	\justify
+	% 	\normalfont
+	% 	%abstract aqui
+	% 	%
+	% 	%
+	% 	%
+	% \end{flushleft}
+	% \clearpage
+% --------------------------------------------------------------------------
+% Lista de figuras
+	\begin{flushleft}
+		\ABNTEXchapterfont\Large\textbf{\MakeUppercase\listadefigurasname}
+	\end{flushleft}
+	\vspace*{-36pt}
+	\pdfbookmark[0]{\listfigurename}{lof}
+	\normalsize
+	\listoffigures*
+	\cleardoublepage
+% --------------------------------------------------------------------------
+% Lista de tabelas
+	\begin{flushleft}
+		\ABNTEXchapterfont\Large\textbf{\MakeUppercase\listadetabelasname}
+	\end{flushleft}
+	\vspace*{-36pt}
+	\pdfbookmark[0]{\listtablename}{lot}
+	\normalsize
+	\listoftables*
+	\cleardoublepage
+% --------------------------------------------------------------------------
+% Lista de símbolos e abreviaturas
+	% \begin{flushleft}
+	% \ABNTEXchapterfont\Large\textbf{\MakeUppercase\listadesimbolsabrevtitlename}
+	% 	\noindent
+	% 	\vspace*{-06pt}
+	% 	\pdfbookmark[0]{\listadesiglasname}{lot}
+	% 	\normalsize
+	% 	\normalfont
+	% 	\aclist[list=acronyms]
+	% \end{flushleft}
+	% \newpage
+% --------------------------------------------------------------------------
+% Tabela de conteúdo
+	\begin{flushleft}
+		\ABNTEXchapterfont\Large\textbf{\MakeUppercase\glosariotitlename}
+	\end{flushleft}
+	%\pagebreak
+	\vspace*{-36pt}
+	\pdfbookmark[0]{\contentsname}{toc}
+	\normalsize
+	\normalfont
+	\tableofcontents*
+	\justify
+--------------------------------------------------------------------------
+% Formatação, remover espaço depois dos títulos
+	\setlength\beforechapskip{-24pt}
+	\setlength\afterchapskip{12pt}
+	\textual
+	\pagestyle{plain}
+	\normalsize
+	\justify
+	\normalfont
+% --------------------------------------------------------------------------
+% Conteúdo do relatório
+	\include{sections/01introducao}
+	\include{sections/02descricaodoexperimento}
+	\include{sections/03primeiroexperimento}
+	\include{sections/04modelagemmatematica}
+	\include{sections/05segundoexperimento}
+	\include{sections/06verificacaodomodelo}
+	\include{sections/07conclusao}
+
+% --------------------------------------------------------------------------
+% Referências
+	% \cleardoublepage
+	\titleformat{\chapter}[display]{\vspace*{-24pt}\ABNTEXchapterfont\large\bfseries}{\chaptertitlename\ \thechapter}{12pt}{\Large}
+	\bibliography{bibliography}
+% --------------------------------------------------------------------------
+% Apêndices
+\apendices
+\justify
+\include{appendix/01dados}
+\include{appendix/02codigo}
+% %
+
+% --------------------------------------------------------------------------
+% % Anexos
+% \anexos
+% \justify
+% \include{annex/XXyyyy}
+% %
+\end{document}

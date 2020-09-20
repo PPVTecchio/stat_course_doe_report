@@ -1,0 +1,411 @@
+%% ----------------------------------------------------------------------------%%
+%% This file may be distributed and/or modified under the                      %%
+%% conditions of the LaTeX Project Public License, either                      %%
+%% version 1.3 of this license or (at your option) any later                   %%
+%% version. The latest version of this license is in:                          %%
+%% http://www.latex-project.org/lppl.txt                                       %%
+%% and version 1.3 or later is part of all distributions of                    %%
+%% LaTeX version 2005/12/01 or later.                                          %%
+%%                                                                             %%
+%% This work has the LPPL maintenance status `maintained'.                     %%
+%% The Current Maintainer of this work is Marco Reis.                          %%
+%%                                                                             %%
+%% This work consists of the files yaacro.dtx and                              %%
+%% yaacro.ins and the derived file yaacro.sty.                                 %%
+%% ----------------------------------------------------------------------------%%
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{yaacro}[2008/05/27 v0.0.2 Yet Anoter Acronym package]
+\RequirePackage{xkeyval}
+\newtoks\@ac@tokscall
+\newtoks\@ac@toksaux
+\newif\if@ac@packagerevert
+\newif\if@ac@createcommand
+\newif\if@ac@forwardcheck\@ac@forwardchecktrue
+\newif\if@ac@showall
+\@ifpackageloaded{hyperref}{%
+  \let\@ac@hypertarget\hypertarget
+  \let\@ac@hyperlink\hyperlink
+}{%
+  \let\@ac@hypertarget\@secondoftwo
+  \let\@ac@hyperlink\@secondoftwo
+}
+\let\@ac@contdef\empty
+\def\ac@defkey#1{%
+  \edef\@ac@key{#1}%
+  \edef\@ac@mainkey{\csname @ac@MAINKEY@#1\endcsname}%
+}
+\def\@ac@printsymbol{%
+  \@ac@ifundefinedkey{%
+    ??\@ac@key??%
+  }{%
+    \@ac@hyperlink{\@ac@mainkey}%
+      {{\csname @ac@ABBREV@\@ac@key\endcsname}}%
+  }%
+}
+\def\@ac@printdescription{%
+  \@ac@ifundefinedkey{%
+    ??\@ac@key??%
+  }{%
+    \@ac@hyperlink{\@ac@mainkey}%
+      {{\csname @ac@NAME@\@ac@key\endcsname}}%
+  }%
+}
+\def\@ac@printcomplete{%
+  \@ac@ifundefinedkey{%
+    ??\@ac@key??%
+  }{%
+    \begingroup
+      \let\acinexpansion\@firstofone
+      \csname @ac@IFREVERT@\@ac@key\endcsname
+        \if@ac@packagerevert
+          \def\@ac@dorevert{0}%
+        \else
+          \def\@ac@dorevert{1}%
+        \fi
+      \else
+        \if@ac@packagerevert
+          \def\@ac@dorevert{1}%
+        \else
+          \def\@ac@dorevert{0}%
+        \fi
+      \fi
+      \ifcase\@ac@dorevert
+        \@ac@printdescription{} (\@ac@printsymbol)%
+      \or
+        \@ac@printsymbol{} (\@ac@printdescription)%
+      \fi
+    \endgroup
+  }%
+}
+\def\@ac@ifundefinedkey{%
+  \edef\@temp{@ac@MAINKEY@\@ac@key}%
+  \@ifundefined{\@temp}%
+}
+\def\ac@condprint#1#2{%
+  % #1: macro to call if key was never cited before (long form)
+  % #2: macro to call if key was already cited (short form)
+  \edef\@ac@cs@cited{@ac@CITED@\@ac@mainkey}%
+  \expandafter\ifcase\csname\@ac@cs@cited\endcsname\relax
+    % 0: never cited
+    #1\relax
+    \@ac@forwardcited
+    \expandafter\gdef\csname\@ac@cs@cited\endcsname{4}%
+  \or
+    % 1: never cited
+    % Works exactly as 0, but activated in the aux file (forward check)
+    #1\relax
+    \@ac@forwardcited
+    \expandafter\gdef\csname\@ac@cs@cited\endcsname{4}%
+  \or
+    % 2: never cited, but should always print in short form
+    #2\relax
+    \@ac@forwardcited
+    \expandafter\gdef\csname\@ac@cs@cited\endcsname{4}%
+  \or
+    % 3: never cited, but should always print in short form
+    % Works exactly as 2, but activated in the aux file (forward check)
+    #2\relax
+    \@ac@forwardcited
+    \expandafter\gdef\csname\@ac@cs@cited\endcsname{4}%
+  \or
+    % 4: already cited
+    #2\relax
+  \fi
+}
+\def\@ac@forwardcited{%
+  \if@ac@forwardcheck
+    \@ac@tokscall{}%
+    \@ac@addtoks{\expandafter\gdef\csname}{@ac@tokscall}%
+    \expandafter\@ac@addtoks\expandafter{\@ac@cs@cited}{@ac@tokscall}%
+    \@ac@addtoks{\endcsname{1}}{@ac@tokscall}%
+    \immediate\write\@auxout{\the\@ac@tokscall}%
+  \fi
+}
+\newcommand{\ac}{%
+  \begingroup
+  \let\acinlist\@gobble
+  \let\acintext\@firstofone
+  \@ifstar{\ac@@}{\ac@}%
+}
+\def\ac@#1{%
+  \ac@defkey{#1}%
+  \ac@condprint{\let\acinexpansion\@firstofone\@ac@printcomplete}%
+    {\let\acinexpansion\@gobble\@ac@printsymbol}%
+  \endgroup
+}
+\def\ac@@#1{%
+  \ac@defkey{#1}%
+  \let\acinexpansion\@firstofone
+  \@ac@printsymbol
+  \endgroup
+}
+\newcommand{\noac}[1]{%
+  \begingroup
+  \ac@defkey{#1}%
+  \ac@condprint{}{}%
+  \endgroup
+}
+\newcommand{\acs}{%
+  \begingroup
+  \let\acinlist\@gobble
+  \let\acintext\@firstofone
+  \let\acinexpansion\@gobble
+  \@ifstar{\acs@@}{\acs@}%
+}
+\def\acs@#1{%
+  \ac@defkey{#1}%
+  \ac@condprint{\@ac@printsymbol}{\@ac@printsymbol}%
+  \endgroup
+}
+\def\acs@@#1{%
+  \ac@defkey{#1}%
+  \@ac@printsymbol
+  \endgroup
+}
+\newcommand{\acd}{%
+  \begingroup
+  \let\acinlist\@gobble
+  \let\acintext\@firstofone
+  \let\acinexpansion\@gobble
+  \@ifstar{\acd@@}{\acd@}%
+}
+\def\acd@#1{%
+  \ac@defkey{#1}%
+  \ac@condprint{\@ac@printdescription}{\@ac@printdescription}%
+  \endgroup
+}
+\def\acd@@#1{%
+  \ac@defkey{#1}%
+  \@ac@printcomplete
+  \endgroup
+}
+\DeclareRobustCommand{\ace}{%
+  \begingroup
+  \let\acinlist\@gobble
+  \let\acintext\@firstofone
+  \let\acinexpansion\@firstofone
+  \@ifstar{\ace@@}{\ace@}%
+}
+\def\ace@#1{%
+  \ac@defkey{#1}%
+  \ac@condprint{\@ac@printcomplete}{\@ac@printcomplete}%
+  \endgroup
+}
+\def\ace@@#1{%
+  \ac@defkey{#1}%
+  \@ac@printcomplete
+  \endgroup
+}
+\define@key{yaacdef}{command}[]{\@ac@createcommandtrue}
+\define@key{yaacdef}{list}{\@ac@deflistnamex{#1}}
+\define@key{yaacdef}{noexpand}[]{\let\@ac@noexpand\@ne}
+\define@boolkey{yaacdef}{revert}[true]{\@ac@packagereverttrue}
+\define@key{yaacdef}{variantof}{\edef\@ac@mainkey{#1}}
+\def\@ac@deflistnamex#1{%
+  \expandafter\def\expandafter\@ac@listname\expandafter{%
+    \csname @ac@LIST#1\endcsname}%
+  \@ifundefined{@ac@LIST#1}{\global\expandafter\let\@ac@listname\empty}{}%
+}
+\@ac@deflistnamex{}
+\let\@ac@noexpand\z@
+\newenvironment{acgroupdef}[1][]{\setkeys{yaacdef}{#1}}{}
+\def\ac@defcommand{%
+  \expandafter\@ifdefinable\expandafter{\@ac@key}{%
+    \@ac@tokscall{}%
+    \@ac@addtoks{\global\def}{@ac@tokscall}%
+    \expandafter\@ac@addtoks\expandafter{\csname\@ac@key\endcsname}
+      {@ac@tokscall}%
+    \expandafter\@ac@addtoks\expandafter{\expandafter{%
+      \expandafter\ac\expandafter{\@ac@key}}}{@ac@tokscall}%
+    \the\@ac@tokscall
+  }%
+}
+\newcommand{\acdef}[2][]{%
+  \begingroup
+  \edef\@ac@key{#2}%
+  \let\@ac@mainkey\undefined
+  \KV@yaacdef@revertfalse
+  \setkeys{yaacdef}{#1}%
+  \acdef@
+}
+\newcommand{\acdef@}[2][]{%
+  \def\@ac@abbrev{#1}%
+  \ifx\@ac@abbrev\empty\let\@ac@abbrev\@ac@key\fi
+  \def\@ac@name{#2}%
+  \let\@ac@text\@ac@name
+  \@ifundefined{@ac@mainkey}{%
+    \expandafter\expandafter\expandafter\@ac@addtoks
+      \expandafter\expandafter\expandafter{\@ac@listname}{@ac@toksaux}%
+    \@ac@addtoks{\@ac@issueitem}{@ac@toksaux}%
+    \expandafter\@ac@addtoksb\expandafter{\@ac@key}{@ac@toksaux}%
+    \expandafter\expandafter\expandafter\gdef\expandafter\@ac@listname
+      \expandafter{\the\@ac@toksaux}%
+    \if@ac@createcommand\ac@defcommand\fi
+    \let\@ac@mainkey\@ac@key
+    % @ac@CITED@... can be already defined because of the aux file.
+    \edef\@ac@cs@cited{@ac@CITED@\@ac@mainkey}%
+    \@ifundefined{\@ac@cs@cited}{%
+      \ifx\@ac@noexpand\z@
+        \def\@ac@cited{0}%
+      \else
+        \def\@ac@cited{2}%
+      \fi
+    }{%
+      \expandafter\let\expandafter\@ac@cited\csname\@ac@cs@cited\endcsname
+      \if\@ac@cited0\else\if\@ac@cited2\else
+        \ifx\@ac@noexpand\z@
+          \def\@ac@cited{1}%
+        \else
+          \def\@ac@cited{3}%
+        \fi
+      \fi\fi
+    }%
+    \global\expandafter\let\csname\@ac@cs@cited\endcsname\@ac@cited
+  }{}%
+  \global\expandafter\let
+    \csname @ac@MAINKEY@\@ac@key\endcsname\@ac@mainkey
+  \global\expandafter\let
+    \csname @ac@ABBREV@\@ac@key\endcsname\@ac@abbrev
+  \global\expandafter\let
+    \csname @ac@NAME@\@ac@key\endcsname\@ac@name
+  \global\expandafter\let
+    \csname @ac@TEXT@\@ac@key\endcsname\@ac@text
+  \global\expandafter\let\csname @ac@IFREVERT@\@ac@key\endcsname
+    \ifKV@yaacdef@revert
+  \endgroup
+}
+\newcommand{\acabbrevformat}{}
+\newcommand{\actextformat}{}
+\long\def\@ac@addtoks#1#2{%
+  \csname#2\expandafter\expandafter\expandafter\endcsname
+    \expandafter\expandafter\expandafter{%
+    \expandafter\the\csname#2\endcsname#1}%
+}
+\def\@ac@addtoksb#1{%
+  \@ac@addtoks{{#1}}%
+}
+\def\@ac@addtoksbcsname#1{%
+  \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\@temp
+    \expandafter\expandafter\expandafter{\csname#1\endcsname}%
+  \expandafter\@ac@addtoksb\expandafter{\@temp}%
+}
+\newcommand{\@ac@issueitem@check}[1]{%
+  \edef\@ac@mainkey{\csname @ac@MAINKEY@#1\endcsname}%
+  \edef\@ac@cs@cited{@ac@CITED@\@ac@mainkey}%
+  \if@ac@showall
+    \let\@ac@citecheck\@ne
+  \else
+    \expandafter\ifcase\csname\@ac@cs@cited\endcsname\relax\or
+      % 1: never cited, but marked as forward cited (aux file)
+      \let\@ac@citecheck\@ne
+    \or\or
+      % 3: never cited, but marked as forward cited (aux file), short print
+      \let\@ac@citecheck\@ne
+    \or
+      % 4: already cited
+      \let\@ac@citecheck\@ne
+    \fi
+  \fi
+}
+\newcommand{\@ac@issueitem@print}[1]{%
+  \edef\@ac@mainkey{\csname @ac@MAINKEY@#1\endcsname}%
+  \edef\@ac@cs@cited{@ac@CITED@\@ac@mainkey}%
+  \if@ac@showall
+    \@ac@issueitem@print@
+  \else
+    \expandafter\ifcase\csname\@ac@cs@cited\endcsname\relax\or
+      % 1: never cited, but marked as forward cited (aux file)
+      \@ac@issueitem@print@
+    \or\or
+      % 3: never cited, but marked as forward cited (aux file), short print
+      \@ac@issueitem@print@
+    \or
+      % 4: already cited
+      \@ac@issueitem@print@
+    \fi
+  \fi
+}
+\def\@ac@issueitem@print@{%
+  \@ac@tokscall{}%
+  \@ac@addtoks{\csname yaacitem\@ac@style\endcsname}{@ac@tokscall}%
+  \@ac@addtoksbcsname{@ac@MAINKEY@\@ac@mainkey}{@ac@tokscall}%
+  \@ac@addtoksbcsname{@ac@ABBREV@\@ac@mainkey}{@ac@tokscall}%
+  \@ac@addtoksbcsname{@ac@TEXT@\@ac@mainkey}{@ac@tokscall}%
+  \the\@ac@tokscall
+}
+\newcommand{\yaacbegindescription}{\begin{description}}
+\newcommand{\yaacenddescription}{\end{description}}
+\newcommand{\yaacitemdescription}[3]{%
+  \item[\@ac@hypertarget{#1}{\acabbrevformat{#2}}] {\actextformat{#3}}\par
+}
+\newcommand{\yaacbegintabular}{\begin{tabular}{@{}ll@{}}}
+\newcommand{\yaacendtabular}{\end{tabular}}
+\newcommand{\yaacitemtabular}[3]{%
+  \@ac@hypertarget{#1}{\acabbrevformat{#2}} & {\actextformat{#3}} \\
+}
+\newcommand{\aclist}{%
+  \begingroup
+  \def\@ac@after{\acclear[]}%
+  \@ifstar{\@@aclist}{\@aclist}%
+}
+\newcommand{\@aclist}[1][]{%
+  \setkeys{yaaclist}{#1}%
+  \let\@ac@citecheck\z@
+  \let\@ac@issueitem\@ac@issueitem@check
+  \@ac@listname
+  \ifx\@ac@citecheck\@ne
+    \let\@ac@issueitem\@ac@issueitem@print
+    \let\acinlist\@firstofone
+    \let\acintext\@gobble
+    \let\acinexpansion\@gobble
+    \@ac@tokscall{}%
+    \expandafter\@ac@addtoks\expandafter{\@ac@begin}{@ac@tokscall}%
+    \expandafter\@ac@addtoks\expandafter{\@ac@listname}{@ac@tokscall}%
+    \expandafter\@ac@addtoks\expandafter{\@ac@end}{@ac@tokscall}%
+    \the\@ac@tokscall
+  \fi
+  \@ac@after
+  \endgroup
+}
+\def\@@aclist{%
+  \let\@ac@after\empty
+  \@aclist
+}
+\newcommand{\acclear}[1][]{%
+  \begingroup
+    \setkeys{yaacclear}{#1}%
+    \global\expandafter\let\@ac@listname\empty
+  \endgroup
+  }
+\define@key{yaaclist}{style}{%
+  \def\@ac@style{#1}%
+  \expandafter\let\expandafter\@ac@begin\expandafter=%
+    \csname yaacbegin#1\endcsname
+  \expandafter\let\expandafter\@ac@end\expandafter=%
+    \csname yaacend#1\endcsname
+}
+\define@key{yaaclist}{begin}{\def\@ac@begin{#1}}
+\define@key{yaaclist}{end}{\def\@ac@end{#1}}
+\define@key{yaaclist}{abbrevformat}{\def\acabbrevformat{#1}}
+\define@key{yaaclist}{textformat}{\def\actextformat{#1}}
+\define@key{yaaclist}{list}{\@ac@deflistnamex{#1}}
+\define@key{yaaclist}{showall}[]{\@ac@showalltrue}
+\define@key{yaacclear}{list}{\@ac@deflistnamex{#1}}
+\DeclareOptionX{style}{\KV@yaaclist@style{#1}}
+\DeclareOptionX{revert}[true]{\KV@yaaclist@revert{#1}}
+\ExecuteOptionsX{style=description}
+\ProcessOptionsX\relax
+\def\acinlist{%
+  \PackageError{yaacro}
+    {You can't use \string\acinlist\space outside \string\ac... commands}
+    {\@ehd}}
+\def\acintext{%
+  \PackageError{yaacro}
+    {You can't use \string\acintext\space outside \string\ac... commands}
+    {\@ehd}}
+\def\acinexpansion{%
+  \PackageError{yaacro}
+    {You can't use \string\acinexpansion\space outside \string\ac... commands}
+    {\@ehd}}
+\endinput
