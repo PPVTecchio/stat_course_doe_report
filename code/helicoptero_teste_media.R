@@ -59,9 +59,9 @@ plot(helicoptero.model2ordem)
 helicoptero.model <- lm(Tempo ~ Altura + Clipe,
                         data = helicoptero)
 summary(helicoptero.model)
-confint(helicoptero.model2ordem)
+confint(helicoptero.model)
 par(mfrow = c(2,2))
-plot(helicoptero.model2ordem)
+plot(helicoptero.model)
 
 ## Testes do modelo
 
