@@ -3,8 +3,52 @@
 
 %! Escrever um pouco sobre o que foi feito
 
+\section{Regressão linear}
+\label{sec:a_modelagem_matematica_modelo_linear}
+
+A Regressão Linear é utilizada para analisar as relações entre o valor de uma variável resultante Y e uma ou mais variáveis X e suas interações. 
+
+O objetivo desta técnica é obter um modelo matemático que seja capaz de representar um fenômeno, demonstrando mediante uma relação linear as relações entre a variável de entrada e a variável de saída. Vale destacar que após a criação do modelo, é possível estimar os valores da variável de resposta Y, utilizando valores conhecidos da variável preditora X.
+
+A Regressão Linear modela uma variável Y como uma função matemática de um ou mais variáveis x, e então esse modelo de regressão pode ser utilizado para obter Y quando apenas o x é conhecido. A função matemática genérica é dada pela função:
+
+Y = β1 + β2X + ϵ
+
+% Figura
+
+Onde o β1 é a interceptação da reta com o eixo vertical e β2 é a inclinação ou o coeficiente angular em relação à variável, eles são chamados de coeficientes de regressão. O parâmetro ϵ é o erro, ou seja, a porção de Y que o modelo de regressão não é capaz de explicar.
+
 \section{Utilizando o modelo linear}
 \label{sec:a_modelagem_matematica_utilizando_o_modelo_linear}
+
+O modelo utilizado é um modelo linear múltiplo, para verificar o modelo matemático utilizando o código a seguir:
+
+%! Colocar código
+
+Neste modelo, são utilizados todos os parâmetros, de modo a verificar quais variáveis tem maior interferência sobre o modelo final e então fazer um modelo linear levando em conta estas variáveis que mais representam este modelo. Os coeficientes obtidos utilizando o modelo linear são mostrados a seguir.
+
+% Colocar figura ou tabela
+
+O valor β1, correspondente à interceptação da reta é mostrado na primeira linha. Os valores corespondentes à inclinação são mostrados na coluna "Estimate", visto que estes são os valores correspondentes a cada variável. Logo, o modelo pode ser medido pela seguinte equação:
+
+Y = - 0.14125 + 0.85625 * Altura - 0.11 * Clipe + 0.05917 * AdesivoTopo + 0.03 * AdesivoLateral
+
+Na equação, a modelagem do helicóptero é dada em função da altura, da presença do clipe e dos adesivos, tanto no topo quanto na lateral. Um aspecto que também deve ser levado em consideração é o p-valor dos coeficientes do modelo linear. O p-valor indica a hipótese deve ser rejeitada ou aceita, neste caso, a hipótese é que o preditor não é significativo para o modelo. Nesta avaliação, para verificar se os preditores são significativos ou não, é verificar se os valores de p são menores que 0,05.
+
+Na análise do modelo, existem dois p-valores de dois preditores que são muito abaixo de 0.05, que são Altura e Clipe. Estes pequenos valores indicam que provavelmente Altura e Clipe sejam uma ótima adição ao modelo. Os valores de p-valor para as variáveis AdesivoTopo e Adesivo lateral são 0.076 e 0.36, respectivamente. Esses valores indicam que existe 8\% e 36\% de chances que essas variáveis não sejam significativas para a regressão.
+
+Residuos
+
+Para testar a qualidade do ajuste do modelo, um parâmetro considerado é a observação dos resíduos, que são as diferenças entre os valores reais e os valores preditos. Como a regressão linear é o processo de traçar uma reta através dos dados em um diagrama de dispersão, a reta principal representa os valores preditos. Os resíduos são a mínima distância entre os valores preditos e os valores reais, representados pelas retas vermelhas na figura. 
+
+% Colocar figura
+
+
+
+
+
+
+
 
 %! Escrever sobre código usado para criar o modelo linear, como este é capaz de utilizar não linearidades
 
